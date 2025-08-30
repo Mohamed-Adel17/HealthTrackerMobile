@@ -1,4 +1,4 @@
-name: Build Mobile App (Simple)
+name: Build Android APK Only
 
 on:
   push:
@@ -30,10 +30,22 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       
+    - name: Show environment info
+      run: |
+        echo "Java version:"
+        java -version
+        echo "Android SDK location:"
+        echo $ANDROID_HOME
+        echo "Android SDK tools:"
+        ls -la $ANDROID_HOME/tools/bin/ || echo "Tools not found"
+        echo "Android SDK platforms:"
+        ls -la $ANDROID_HOME/platforms/ || echo "Platforms not found"
+      
     - name: Install .NET MAUI workload
       run: |
         dotnet workload install maui
         dotnet workload list
+        dotnet --info
       
     - name: Restore dependencies
       run: dotnet restore --verbosity normal
@@ -41,7 +53,8 @@ jobs:
     - name: Build Android APK
       run: |
         dotnet build -f net9.0-android -c Release --verbosity normal
-        ls -la bin/Release/net9.0-android/
+        echo "Build completed. Checking output directory:"
+        ls -la bin/Release/net9.0-android/ || echo "Output directory not found"
       
     - name: Upload Android APK
       uses: actions/upload-artifact@v4
@@ -49,36 +62,3 @@ jobs:
       with:
         name: android-apk
         path: bin/Release/net9.0-android/android-x64/Release/*.apk
-
-  build-windows:
-    runs-on: windows-latest
-    name: Build Windows App
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.x'
-        
-    - name: Install .NET MAUI workload
-      run: |
-        dotnet workload install maui
-        dotnet workload list
-      
-    - name: Restore dependencies
-      run: dotnet restore --verbosity normal
-      
-    - name: Build Windows App
-      run: |
-        dotnet build -f net9.0-windows10.0.19041.0 -c Release --verbosity normal
-        ls -la bin/Release/net9.0-windows10.0.19041.0/win10-x64/Release/
-      
-    - name: Upload Windows App
-      uses: actions/upload-artifact@v4
-      if: success()
-      with:
-        name: windows-app
-        path: bin/Release/net9.0-windows10.0.19041.0/win10-x64/Release/
