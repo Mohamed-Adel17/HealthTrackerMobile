@@ -1,0 +1,78 @@
+name: Debug Android Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  debug-android:
+    runs-on: ubuntu-latest
+    name: Debug Android Build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Show system info
+      run: |
+        echo "=== System Information ==="
+        echo "OS: $(uname -a)"
+        echo "Java version:"
+        java -version
+        echo "Android SDK location: $ANDROID_HOME"
+        echo "Android SDK contents:"
+        ls -la $ANDROID_HOME/ || echo "ANDROID_HOME not set"
+        
+    - name: Install .NET MAUI workload
+      run: |
+        echo "=== Installing MAUI Workload ==="
+        dotnet workload install maui
+        echo "=== Installed Workloads ==="
+        dotnet workload list
+        echo "=== .NET Info ==="
+        dotnet --info
+        
+    - name: Check project file
+      run: |
+        echo "=== Project File Contents ==="
+        cat MinoxidilTrackerMobile.csproj
+        
+    - name: Restore dependencies
+      run: |
+        echo "=== Restoring Dependencies ==="
+        dotnet restore --verbosity normal
+        
+    - name: Try build with .NET 8.0
+      run: |
+        echo "=== Attempting .NET 8.0 Android Build ==="
+        dotnet build -f net8.0-android -c Release --verbosity normal || echo "Build failed, checking for .NET 9.0"
+        
+    - name: Try build with .NET 9.0
+      run: |
+        echo "=== Attempting .NET 9.0 Android Build ==="
+        dotnet build -f net9.0-android -c Release --verbosity normal || echo "Build failed"
+        
+    - name: Check output directories
+      run: |
+        echo "=== Checking Output Directories ==="
+        find . -name "*.apk" -o -name "*.aab" || echo "No APK/AAB files found"
+        echo "=== Directory Structure ==="
+        ls -la bin/ || echo "bin directory not found"
+        ls -la obj/ || echo "obj directory not found"
