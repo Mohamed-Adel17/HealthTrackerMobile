@@ -1,0 +1,102 @@
+name: Simple Android Build
+
+on:
+  workflow_dispatch: # Manual trigger only
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    name: Build Android APK (Simple)
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Setup Java 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install Android SDK Components
+      run: |
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --update
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        
+    - name: Verify Environment
+      run: |
+        echo "=== System Information ==="
+        echo "Java Version:"
+        java -version
+        echo ""
+        echo "Android SDK Root: $ANDROID_HOME"
+        echo "Available Android Platforms:"
+        ls -la $ANDROID_HOME/platforms/ || echo "No platforms found"
+        echo "Available Build Tools:"
+        ls -la $ANDROID_HOME/build-tools/ || echo "No build tools found"
+        echo ""
+        echo ".NET Version:"
+        dotnet --version
+        echo ""
+        echo "Available .NET Workloads:"
+        dotnet workload list
+        
+    - name: Install MAUI Workload
+      run: |
+        echo "Installing MAUI workload..."
+        dotnet workload install maui --verbosity normal
+        echo "Workloads after installation:"
+        dotnet workload list
+        
+    - name: Check Project File
+      run: |
+        echo "=== Project File Content ==="
+        cat MinoxidilTrackerMobile.csproj
+        
+    - name: Restore NuGet Packages
+      run: |
+        echo "=== Restoring NuGet Packages ==="
+        dotnet restore --verbosity detailed
+        
+    - name: Clean Build Output
+      run: |
+        echo "=== Cleaning Previous Build Output ==="
+        dotnet clean
+        
+    - name: Build Android APK
+      run: |
+        echo "=== Building Android APK ==="
+        dotnet build -f net8.0-android -c Release --verbosity detailed --no-restore
+        
+    - name: Find Build Output
+      run: |
+        echo "=== Searching for Build Output ==="
+        echo "Looking for APK files:"
+        find . -name "*.apk" -type f 2>/dev/null || echo "No APK files found"
+        echo ""
+        echo "Looking for AAB files:"
+        find . -name "*.aab" -type f 2>/dev/null || echo "No AAB files found"
+        echo ""
+        echo "Build output directory structure:"
+        find ./bin -type d 2>/dev/null || echo "No bin directory found"
+        echo ""
+        echo "Obj directory structure:"
+        find ./obj -type d 2>/dev/null || echo "No obj directory found"
+        
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: build-output
+        path: |
+          bin/
+          obj/
+          *.log
