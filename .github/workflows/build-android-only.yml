@@ -1,11 +1,7 @@
 name: Build Android APK Only
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch: # Manual trigger only
 
 jobs:
   build-android:
@@ -16,10 +12,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup .NET
+    - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '8.0.x'
         
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -41,9 +37,9 @@ jobs:
         echo "Android SDK platforms:"
         ls -la $ANDROID_HOME/platforms/ || echo "Platforms not found"
       
-    - name: Install .NET MAUI workload
+    - name: Install .NET MAUI Android Workload
       run: |
-        dotnet workload install maui
+        dotnet workload install maui-android
         dotnet workload list
         dotnet --info
       
@@ -52,13 +48,13 @@ jobs:
       
     - name: Build Android APK
       run: |
-        dotnet build -f net9.0-android -c Release --verbosity normal
+        dotnet build -f net8.0-android -c Release --verbosity normal
         echo "Build completed. Checking output directory:"
-        ls -la bin/Release/net9.0-android/ || echo "Output directory not found"
+        ls -la bin/Release/net8.0-android/ || echo "Output directory not found"
       
     - name: Upload Android APK
       uses: actions/upload-artifact@v4
       if: success()
       with:
         name: android-apk
-        path: bin/Release/net9.0-android/android-x64/Release/*.apk
+        path: bin/Release/net8.0-android/android-x64/Release/*.apk
