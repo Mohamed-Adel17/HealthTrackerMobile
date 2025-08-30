@@ -21,9 +21,6 @@
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		
-		<!-- Ensure XAML compilation works -->
-		<EnableDefaultXamlItems>false</EnableDefaultXamlItems>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -42,6 +39,9 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		
+		<!-- Styles -->
+		<MauiXaml Include="Resources\Styles\*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
