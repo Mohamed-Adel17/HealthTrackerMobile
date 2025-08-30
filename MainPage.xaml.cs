@@ -2,7 +2,7 @@
 using System.Text.Json;
 using Plugin.LocalNotification;
 
-namespace MinoxidilTrackerMobile;
+namespace HealthTrackerMobile;
 
 public partial class MainPage : ContentPage
 {

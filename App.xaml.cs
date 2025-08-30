@@ -1,6 +1,6 @@
 ﻿using Plugin.LocalNotification;
 
-namespace MinoxidilTrackerMobile;
+namespace HealthTrackerMobile;
 
 public partial class App : Application
 {

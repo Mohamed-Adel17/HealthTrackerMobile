@@ -1,4 +1,4 @@
-﻿namespace MinoxidilTrackerMobile;
+﻿namespace HealthTrackerMobile;
 
 public partial class AppShell : Shell
 {

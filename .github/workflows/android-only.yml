@@ -26,14 +26,45 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       
+    - name: Show environment info
+      run: |
+        echo "=== Environment Information ==="
+        echo "Java version:"
+        java -version
+        echo "Android SDK location: $ANDROID_HOME"
+        echo "Android SDK contents:"
+        ls -la $ANDROID_HOME/ || echo "ANDROID_HOME not set"
+        echo ".NET version:"
+        dotnet --version
+        
     - name: Install .NET MAUI workload
-      run: dotnet workload install maui
-      
+      run: |
+        echo "=== Installing MAUI Workload ==="
+        dotnet workload install maui
+        echo "=== Installed Workloads ==="
+        dotnet workload list
+        
+    - name: Restore dependencies
+      run: |
+        echo "=== Restoring Dependencies ==="
+        dotnet restore --verbosity normal
+        
     - name: Build Android APK
-      run: dotnet build -f net8.0-android -c Release
-      
+      run: |
+        echo "=== Building Android APK ==="
+        dotnet build -f net8.0-android -c Release --verbosity normal
+        
+    - name: Check build output
+      run: |
+        echo "=== Checking Build Output ==="
+        echo "Looking for APK files:"
+        find . -name "*.apk" -o -name "*.aab" || echo "No APK/AAB files found"
+        echo "Build output directory:"
+        ls -la bin/Release/net8.0-android/ || echo "Build output directory not found"
+        
     - name: Upload Android APK
       uses: actions/upload-artifact@v4
+      if: success()
       with:
         name: android-apk
         path: bin/Release/net8.0-android/android-x64/Release/*.apk

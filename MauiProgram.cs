@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Plugin.LocalNotification;
 
-namespace MinoxidilTrackerMobile;
+namespace HealthTrackerMobile;
 
 public static class MauiProgram
 {
