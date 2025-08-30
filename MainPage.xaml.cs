@@ -261,6 +261,9 @@ public partial class MainPage : ContentPage
         TotalLabel.Text = $"Total Records: {_applications.Count}";
         TodayLabel.Text = $"Today: {todayApplications.Count}";
         
+        // Debug: Force UI update for the CollectionView
+        Applications = _applications;
+        
         if (_applications.Count > 0)
         {
             var lastApp = _applications.OrderByDescending(a => a.DateTime).First();
@@ -344,5 +347,5 @@ public partial class MainPage : ContentPage
 public class ApplicationRecord
 {
     public DateTime DateTime { get; set; }
-    public string DisplayText => $"{DateTime.ToString("hh:mm:ss tt")} - {DateTime.ToString("MMM dd, yyyy")}";
+    public string DisplayText => $"{DateTime:hh:mm:ss tt} - {DateTime:MMM dd, yyyy}";
 }
