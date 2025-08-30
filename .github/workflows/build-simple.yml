@@ -1,84 +1,16 @@
-name: Build Mobile App (Simple)
+name: Build Mobile App (Simple) - DISABLED
 
-on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch: # Allow manual trigger
+# This workflow is disabled to avoid automatic builds
+# Use android-only.yml instead for manual Android builds
 
-jobs:
-  build-android:
-    runs-on: ubuntu-latest
-    name: Build Android APK
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.x'
-        
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-        
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-      
-    - name: Install .NET MAUI workload
-      run: |
-        dotnet workload install maui
-        dotnet workload list
-      
-    - name: Restore dependencies
-      run: dotnet restore --verbosity normal
-      
-    - name: Build Android APK
-      run: |
-        dotnet build -f net9.0-android -c Release --verbosity normal
-        ls -la bin/Release/net9.0-android/
-      
-    - name: Upload Android APK
-      uses: actions/upload-artifact@v4
-      if: success()
-      with:
-        name: android-apk
-        path: bin/Release/net9.0-android/android-x64/Release/*.apk
+# on:
+#   push:
+#     branches: [ main, master ]
+#   pull_request:
+#     branches: [ main, master ]
+#   workflow_dispatch: # Allow manual trigger
 
-  build-windows:
-    runs-on: windows-latest
-    name: Build Windows App
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.x'
-        
-    - name: Install .NET MAUI workload
-      run: |
-        dotnet workload install maui
-        dotnet workload list
-      
-    - name: Restore dependencies
-      run: dotnet restore --verbosity normal
-      
-    - name: Build Windows App
-      run: |
-        dotnet build -f net9.0-windows10.0.19041.0 -c Release --verbosity normal
-        ls -la bin/Release/net9.0-windows10.0.19041.0/win10-x64/Release/
-      
-    - name: Upload Windows App
-      uses: actions/upload-artifact@v4
-      if: success()
-      with:
-        name: windows-app
-        path: bin/Release/net9.0-windows10.0.19041.0/win10-x64/Release/
+# jobs:
+#   build-android:
+#     runs-on: ubuntu-latest
+#     name: Build Android APK
