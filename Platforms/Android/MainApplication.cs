@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace MinoxidilTrackerMobile;
+namespace HealthTrackerMobile;
 
 [Application]
 public class MainApplication : MauiApplication
