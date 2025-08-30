@@ -1,0 +1,139 @@
+name: Build Mobile App
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    name: Build Android APK
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v0
+      
+    - name: Install .NET MAUI workload
+      run: dotnet workload install maui
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build Android APK
+      run: dotnet build -f net9.0-android -c Release
+      
+    - name: Build Android AAB (App Bundle)
+      run: dotnet build -f net9.0-android -c Release -p:AndroidPackageFormat=apk
+      
+    - name: Upload Android APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-apk
+        path: bin/Release/net9.0-android/android-x64/Release/*.apk
+        
+    - name: Upload Android AAB
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-aab
+        path: bin/Release/net9.0-android/android-x64/Release/*.aab
+
+  build-ios:
+    runs-on: macos-latest
+    name: Build iOS App
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Install .NET MAUI workload
+      run: dotnet workload install maui
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build iOS App
+      run: dotnet build -f net9.0-ios -c Release
+      
+    - name: Upload iOS App
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-app
+        path: bin/Release/net9.0-ios/ios-arm64/Release/
+
+  build-windows:
+    runs-on: windows-latest
+    name: Build Windows App
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Install .NET MAUI workload
+      run: dotnet workload install maui
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build Windows App
+      run: dotnet build -f net9.0-windows10.0.19041.0 -c Release
+      
+    - name: Upload Windows App
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-app
+        path: bin/Release/net9.0-windows10.0.19041.0/win10-x64/Release/
+
+  build-macos:
+    runs-on: macos-latest
+    name: Build macOS App
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Install .NET MAUI workload
+      run: dotnet workload install maui
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build macOS App
+      run: dotnet build -f net9.0-maccatalyst -c Release
+      
+    - name: Upload macOS App
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-app
+        path: bin/Release/net9.0-maccatalyst/maccatalyst-x64/Release/

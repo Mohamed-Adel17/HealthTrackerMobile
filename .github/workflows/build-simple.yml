@@ -1,0 +1,74 @@
+name: Build Mobile App (Simple)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    name: Build Android APK
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v0
+      
+    - name: Install .NET MAUI workload
+      run: dotnet workload install maui
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build Android APK
+      run: dotnet build -f net9.0-android -c Release
+      
+    - name: Upload Android APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-apk
+        path: bin/Release/net9.0-android/android-x64/Release/*.apk
+
+  build-windows:
+    runs-on: windows-latest
+    name: Build Windows App
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Install .NET MAUI workload
+      run: dotnet workload install maui
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build Windows App
+      run: dotnet build -f net9.0-windows10.0.19041.0 -c Release
+      
+    - name: Upload Windows App
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-app
+        path: bin/Release/net9.0-windows10.0.19041.0/win10-x64/Release/

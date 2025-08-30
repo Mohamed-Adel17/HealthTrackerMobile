@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MinoxidilTrackerMobile.MainPage"
+             Title="Minoxidil Tracker">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+            
+            <!-- Header -->
+            <Label 
+                Text="Minoxidil Tracker"
+                FontSize="32"
+                HorizontalOptions="Center"
+                TextColor="#0D6EFD"
+                FontAttributes="Bold" />
+
+            <Label 
+                Text="Track your applications with 24-hour reminders"
+                FontSize="16"
+                HorizontalOptions="Center"
+                TextColor="#6C757D" />
+
+            <!-- Record Button -->
+            <Button 
+                x:Name="RecordButton"
+                Text="📝 Record Application Now"
+                Clicked="OnRecordClicked"
+                HorizontalOptions="Center"
+                BackgroundColor="#198754"
+                TextColor="White"
+                FontSize="18"
+                FontAttributes="Bold"
+                CornerRadius="10"
+                Padding="20,15" />
+
+            <!-- Statistics Card -->
+            <Frame BorderColor="#DEE2E6" CornerRadius="10" Padding="20" Margin="0,10">
+                <VerticalStackLayout Spacing="15">
+                    <Label 
+                        Text="📊 Statistics"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#198754" />
+                    
+                    <Label 
+                        x:Name="TotalLabel"
+                        Text="Total Applications: 0"
+                        FontSize="16" />
+                    
+                    <Label 
+                        x:Name="TodayLabel"
+                        Text="Today: 0"
+                        FontSize="16" />
+                    
+                    <Label 
+                        x:Name="LastAppLabel"
+                        Text="Last Application: Never"
+                        FontSize="16" />
+                    
+                    <Label 
+                        x:Name="NextReminderLabel"
+                        Text="Next Reminder: N/A"
+                        FontSize="16"
+                        TextColor="#DC3545" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Today's Applications -->
+            <Frame BorderColor="#DEE2E6" CornerRadius="10" Padding="20">
+                <VerticalStackLayout Spacing="15">
+                    <Label 
+                        Text="📅 Today's Applications"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        TextColor="#198754" />
+                    
+                    <CollectionView 
+                        x:Name="ApplicationsCollection"
+                        ItemsSource="{Binding Applications}"
+                        HeightRequest="200">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Margin="0,5" Padding="15" BorderColor="#E9ECEF" CornerRadius="8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Label 
+                                            Grid.Column="0"
+                                            Text="{Binding DisplayText}"
+                                            FontSize="16"
+                                            VerticalOptions="Center" />
+                                        
+                                        <Button 
+                                            Grid.Column="1"
+                                            Text="✏️"
+                                            Clicked="OnEditClicked"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#FFC107"
+                                            TextColor="White"
+                                            CornerRadius="5"
+                                            Padding="10,5"
+                                            Margin="5,0,0,0" />
+                                        
+                                        <Button 
+                                            Grid.Column="2"
+                                            Text="❌"
+                                            Clicked="OnDeleteClicked"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#DC3545"
+                                            TextColor="White"
+                                            CornerRadius="5"
+                                            Padding="10,5"
+                                            Margin="5,0,0,0" />
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Action Buttons -->
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Button 
+                    x:Name="ClearButton"
+                    Text="🗑️ Clear All"
+                    Clicked="OnClearClicked"
+                    BackgroundColor="#DC3545"
+                    TextColor="White"
+                    CornerRadius="8"
+                    Padding="20,10" />
+                
+                <Button 
+                    x:Name="SettingsButton"
+                    Text="⚙️ Settings"
+                    Clicked="OnSettingsClicked"
+                    BackgroundColor="#6C757D"
+                    TextColor="White"
+                    CornerRadius="8"
+                    Padding="20,10" />
+            </HorizontalStackLayout>
+
+            <!-- Notification Info Card -->
+            <Frame BorderColor="#DEE2E6" CornerRadius="10" Padding="20" BackgroundColor="#E7F3FF">
+                <VerticalStackLayout Spacing="10">
+                    <Label 
+                        Text="🔔 Notification Feature"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#0D6EFD"
+                        HorizontalOptions="Center" />
+                    
+                    <Label 
+                        Text="• You'll receive a notification 24 hours after each application"
+                        FontSize="14"
+                        TextColor="#495057" />
+                    
+                    <Label 
+                        Text="• Tap 'Record Now' when notified to log your application"
+                        FontSize="14"
+                        TextColor="#495057" />
+                    
+                    <Label 
+                        Text="• Notifications work even when the app is closed"
+                        FontSize="14"
+                        TextColor="#495057" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Tips Card -->
+            <Frame BorderColor="#DEE2E6" CornerRadius="10" Padding="20" BackgroundColor="#F8F9FA">
+                <Label 
+                    Text="💡 Tip: For best results, apply minoxidil twice daily as prescribed by your doctor. This app helps you maintain a consistent schedule with 24-hour reminders."
+                    FontSize="14"
+                    TextColor="#6C757D"
+                    HorizontalOptions="Center" />
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
