@@ -56,17 +56,31 @@ jobs:
         echo "=== Building Android APK ==="
         dotnet build -f net8.0-android -c Release --verbosity normal
         
-    - name: Check build output
+    - name: Find APK files
       run: |
-        echo "=== Checking Build Output ==="
-        echo "Looking for APK files:"
-        find . -name "*.apk" -o -name "*.aab" || echo "No APK/AAB files found"
-        echo "Build output directory:"
-        ls -la bin/Release/net8.0-android/ || echo "Build output directory not found"
+        echo "=== Searching for APK files ==="
+        echo "Current directory:"
+        pwd
+        echo ""
+        echo "Looking for APK files in common locations:"
+        find . -name "*.apk" -type f 2>/dev/null || echo "No APK files found"
+        echo ""
+        echo "Build output directory structure:"
+        find ./bin -type d 2>/dev/null || echo "No bin directory found"
+        echo ""
+        echo "Contents of bin/Release/net8.0-android/:"
+        ls -la ./bin/Release/net8.0-android/ 2>/dev/null || echo "Directory not found"
+        echo ""
+        echo "Looking for APK in android-x64 subdirectories:"
+        find ./bin/Release/net8.0-android -name "*.apk" -type f 2>/dev/null || echo "No APK files found in android-x64"
         
     - name: Upload Android APK
       uses: actions/upload-artifact@v4
-      if: success()
+      if: always()
       with:
         name: android-apk
-        path: bin/Release/net8.0-android/android-x64/Release/*.apk
+        path: |
+          bin/Release/net8.0-android/android-x64/Release/*.apk
+          bin/Release/net8.0-android/android-x64/Debug/*.apk
+          bin/Release/net8.0-android/*.apk
+          bin/Release/net8.0-android/**/*.apk
