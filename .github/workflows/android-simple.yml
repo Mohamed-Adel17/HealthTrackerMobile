@@ -49,10 +49,10 @@ jobs:
         echo "Available .NET Workloads:"
         dotnet workload list
         
-    - name: Install MAUI Workload
+    - name: Install MAUI Android Workload
       run: |
-        echo "Installing MAUI workload..."
-        dotnet workload install maui --verbosity normal
+        echo "Installing MAUI Android workload..."
+        dotnet workload install maui-android --verbosity normal
         echo "Workloads after installation:"
         dotnet workload list
         

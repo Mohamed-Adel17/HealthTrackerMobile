@@ -37,10 +37,10 @@ jobs:
         echo ".NET version:"
         dotnet --version
         
-    - name: Install .NET MAUI workload
+    - name: Install .NET MAUI Android Workload
       run: |
-        echo "=== Installing MAUI Workload ==="
-        dotnet workload install maui
+        echo "=== Installing MAUI Android Workload ==="
+        dotnet workload install maui-android
         echo "=== Installed Workloads ==="
         dotnet workload list
         
