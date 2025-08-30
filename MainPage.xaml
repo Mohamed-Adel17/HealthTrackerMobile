@@ -16,7 +16,7 @@
                 FontAttributes="Bold" />
 
             <Label 
-                Text="Track your applications with 24-hour reminders"
+                Text="Track your records with 12-hour reminders"
                 FontSize="16"
                 HorizontalOptions="Center"
                 TextColor="#6C757D" />
@@ -24,7 +24,7 @@
             <!-- Record Button -->
             <Button 
                 x:Name="RecordButton"
-                Text="📝 Record Application Now"
+                Text="📝 Record Now"
                 Clicked="OnRecordClicked"
                 HorizontalOptions="Center"
                 BackgroundColor="#198754"
@@ -45,7 +45,7 @@
                     
                     <Label 
                         x:Name="TotalLabel"
-                        Text="Total Applications: 0"
+                        Text="Total Records: 0"
                         FontSize="16" />
                     
                     <Label 
@@ -55,7 +55,7 @@
                     
                     <Label 
                         x:Name="LastAppLabel"
-                        Text="Last Application: Never"
+                        Text="Last Record: Never"
                         FontSize="16" />
                     
                     <Label 
@@ -66,11 +66,11 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- Today's Applications -->
+            <!-- Today's Records -->
             <Frame BorderColor="#DEE2E6" CornerRadius="10" Padding="20">
                 <VerticalStackLayout Spacing="15">
                     <Label 
-                        Text="📅 Today's Applications"
+                        Text="📅 Today's Records"
                         FontSize="20"
                         FontAttributes="Bold"
                         TextColor="#198754" />
@@ -156,12 +156,12 @@
                         HorizontalOptions="Center" />
                     
                     <Label 
-                        Text="• You'll receive a notification 24 hours after each application"
+                        Text="• You'll receive a notification 12 hours after each record"
                         FontSize="14"
                         TextColor="#495057" />
                     
                     <Label 
-                        Text="• Tap 'Record Now' when notified to log your application"
+                        Text="• Tap 'Record Now' when notified to log your record"
                         FontSize="14"
                         TextColor="#495057" />
                     
@@ -175,7 +175,7 @@
             <!-- Tips Card -->
             <Frame BorderColor="#DEE2E6" CornerRadius="10" Padding="20" BackgroundColor="#F8F9FA">
                 <Label 
-                    Text="💡 Tip: For best results, apply minoxidil twice daily as prescribed by your doctor. This app helps you maintain a consistent schedule with 24-hour reminders."
+                    Text="💡 Tip: For best results, apply minoxidil twice daily as prescribed by your doctor. This app helps you maintain a consistent schedule with 12-hour reminders."
                     FontSize="14"
                     TextColor="#6C757D"
                     HorizontalOptions="Center" />

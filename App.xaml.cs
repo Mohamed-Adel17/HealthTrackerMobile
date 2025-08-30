@@ -31,7 +31,7 @@ public partial class App : Application
 				{
 					// The reminder will be handled by the timer in MainPage
 					await mainPage.DisplayAlert("⏰ Minoxidil Reminder", 
-						"It's been 24 hours since your last application. Time for your next minoxidil application!", 
+						"It's been 12 hours since your last record. Time for your next minoxidil application!", 
 						"Record Now", "Dismiss");
 				}
 			});

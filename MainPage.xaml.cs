@@ -8,8 +8,8 @@ public partial class MainPage : ContentPage
 {
     private ObservableCollection<ApplicationRecord> _applications;
     private readonly string _dataFilePath;
-    private IDispatcherTimer _reminderTimer;
-    private const int REMINDER_HOURS = 24; // 24-hour reminder as requested
+    private IDispatcherTimer? _reminderTimer;
+    private const int REMINDER_HOURS = 12; // 12-hour reminder as requested
 
     public ObservableCollection<ApplicationRecord> Applications
     {
@@ -69,7 +69,7 @@ public partial class MainPage : ContentPage
         _reminderTimer.Start();
     }
 
-    private async void ReminderTimer_Tick(object sender, EventArgs e)
+    private async void ReminderTimer_Tick(object? sender, EventArgs e)
     {
         if (_applications.Count == 0) return;
 
@@ -88,14 +88,14 @@ public partial class MainPage : ContentPage
         var lastApp = _applications.OrderByDescending(a => a.DateTime).First();
         var timeSinceLastApp = DateTime.Now - lastApp.DateTime;
         
-        string message = $"It's been {timeSinceLastApp.Hours} hours since your last application. " +
+        string message = $"It's been {timeSinceLastApp.Hours} hours since your last record. " +
                         "Time for your next minoxidil application!";
 
         var result = await DisplayAlert("⏰ Minoxidil Reminder", message, "Record Now", "Dismiss");
         
         if (result)
         {
-            // User clicked "Record Now" - record the application
+            // User clicked "Record Now" - record the record
             await RecordApplicationNow();
         }
     }
@@ -109,14 +109,14 @@ public partial class MainPage : ContentPage
         SaveApplications();
         UpdateDisplay();
         
-        // Schedule next 24-hour reminder
+        // Schedule next 12-hour reminder
         ScheduleNextReminder(now);
         
         string time12Hour = now.ToString("hh:mm:ss tt");
         string date = now.ToString("MMM dd, yyyy");
         
         await DisplayAlert("✅ Recorded!", 
-            $"Minoxidil application recorded!\n\nTime: {time12Hour}\nDate: {date}\n\nNext reminder in 24 hours!", 
+            $"Minoxidil record saved!\n\nTime: {time12Hour}\nDate: {date}\n\nNext reminder in 12 hours!", 
             "OK");
     }
 
@@ -137,7 +137,7 @@ public partial class MainPage : ContentPage
         {
             NotificationId = 100,
             Title = "⏰ Minoxidil Reminder",
-            Description = "It's been 24 hours since your last application. Time for your next minoxidil application!",
+            Description = "It's been 12 hours since your last record. Time for your next minoxidil application!",
             ReturningData = "reminder",
             Schedule = new NotificationRequestSchedule
             {
@@ -181,7 +181,7 @@ public partial class MainPage : ContentPage
                 SaveApplications();
                 UpdateDisplay();
                 
-                // Reschedule reminder based on the most recent application
+                // Reschedule reminder based on the most recent record
                 var lastApp = _applications.OrderByDescending(a => a.DateTime).First();
                 ScheduleNextReminder(lastApp.DateTime);
                 
@@ -211,7 +211,7 @@ public partial class MainPage : ContentPage
                 SaveApplications();
                 UpdateDisplay();
                 
-                // Reschedule reminder based on the most recent application (if any)
+                // Reschedule reminder based on the most recent record (if any)
                 if (_applications.Count > 0)
                 {
                     var lastApp = _applications.OrderByDescending(a => a.DateTime).First();
@@ -219,7 +219,7 @@ public partial class MainPage : ContentPage
                 }
                 else
                 {
-                    // No applications left, cancel all reminders
+                    // No records left, cancel all reminders
                     LocalNotificationCenter.Current.CancelAll();
                 }
                 
@@ -232,7 +232,7 @@ public partial class MainPage : ContentPage
     {
         var result = await DisplayAlert(
             "Confirm Clear All",
-            "Are you sure you want to clear all application data?\n\nThis action cannot be undone.",
+            "Are you sure you want to clear all record data?\n\nThis action cannot be undone.",
             "Clear All",
             "Cancel");
 
@@ -242,7 +242,7 @@ public partial class MainPage : ContentPage
             SaveApplications();
             UpdateDisplay();
             
-            // Cancel all reminders since there are no applications
+            // Cancel all reminders since there are no records
             LocalNotificationCenter.Current.CancelAll();
             
             await DisplayAlert("✅ Cleared!", "All data has been cleared successfully!", "OK");
@@ -258,7 +258,7 @@ public partial class MainPage : ContentPage
     {
         var todayApplications = _applications.Where(a => a.DateTime.Date == DateTime.Today).ToList();
         
-        TotalLabel.Text = $"Total Applications: {_applications.Count}";
+        TotalLabel.Text = $"Total Records: {_applications.Count}";
         TodayLabel.Text = $"Today: {todayApplications.Count}";
         
         if (_applications.Count > 0)
@@ -266,7 +266,7 @@ public partial class MainPage : ContentPage
             var lastApp = _applications.OrderByDescending(a => a.DateTime).First();
             string lastTime12Hour = lastApp.DateTime.ToString("hh:mm:ss tt");
             string lastDate = lastApp.DateTime.ToString("MMM dd, yyyy");
-            LastAppLabel.Text = $"Last Application: {lastTime12Hour} ({lastDate})";
+            LastAppLabel.Text = $"Last Record: {lastTime12Hour} ({lastDate})";
 
             var nextReminder = lastApp.DateTime.AddHours(REMINDER_HOURS);
             if (nextReminder > DateTime.Now)
@@ -282,7 +282,7 @@ public partial class MainPage : ContentPage
         }
         else
         {
-            LastAppLabel.Text = "Last Application: Never";
+            LastAppLabel.Text = "Last Record: Never";
             NextReminderLabel.Text = "Next Reminder: N/A";
         }
     }
@@ -305,7 +305,7 @@ public partial class MainPage : ContentPage
                             _applications.Add(app);
                         }
                         
-                        // Reschedule reminder based on the most recent application
+                        // Reschedule reminder based on the most recent record
                         if (_applications.Count > 0)
                         {
                             var lastApp = _applications.OrderByDescending(a => a.DateTime).First();
