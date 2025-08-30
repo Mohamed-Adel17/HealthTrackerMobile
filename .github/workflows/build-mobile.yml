@@ -28,7 +28,7 @@ jobs:
         java-version: '17'
         
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v0
+      uses: android-actions/setup-android@v3
       
     - name: Install .NET MAUI workload
       run: dotnet workload install maui
